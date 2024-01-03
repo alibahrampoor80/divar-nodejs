@@ -4,7 +4,7 @@ const {optionMessage} = require("./option.message");
 const {StatusCodes} = require("http-status-codes")
 
 class optionController {
-    #service = optionService
+    #service
 
     constructor() {
         autoBind(this)
@@ -13,15 +13,23 @@ class optionController {
 
     async create(req, res, next) {
         try {
-            res.send("hello")
+
+            const {title, key, guid, enum: list, type, category} = req.body
+            await this.#service.create({title, key, guid, enum: list, type, category})
+            return res.json({
+                status: StatusCodes.CREATED,
+                message: optionMessage.created
+            })
         } catch (err) {
             next(err)
+            // console.log(err)
         }
     }
 
     async find(req, res, next) {
         try {
-            res.send("hello")
+            const options = await this.#service.find()
+            return res.json(options)
         } catch (err) {
             next(err)
         }
@@ -29,7 +37,20 @@ class optionController {
 
     async findByCategoryId(req, res, next) {
         try {
-            res.send("hello")
+            const {categoryId} = req.params
+            const options = await this.#service.findByCategoryId(categoryId)
+
+            return res.json(options)
+        } catch (err) {
+            next(err)
+        }
+    }
+    async findByCategorySlug(req, res, next) {
+        try {
+            const {slug} = req.params
+            const options = await this.#service.findByCategorySlug(slug)
+
+            return res.json(options)
         } catch (err) {
             next(err)
         }
@@ -37,7 +58,9 @@ class optionController {
 
     async findById(req, res, next) {
         try {
-            res.send("hello")
+            const {id} = req.params
+            const option = await this.#service.findById(id)
+            return res.json(option)
         } catch (err) {
             next(err)
         }

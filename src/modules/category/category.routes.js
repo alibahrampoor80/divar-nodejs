@@ -3,8 +3,9 @@ const {authorization} = require("../../common/guard/authorization.guard");
 const router = require("express").Router()
 
 // router.get('/category')
-router.post('/create', authorization, CategoryController.create)
-router.get('/get-all', authorization, CategoryController.find)
+router.post("/", CategoryController.create)
+router.get("/", CategoryController.find)
+// router.delete("/:id", CategoryController.remove)
 
 module.exports = {
     categoryRouter: router

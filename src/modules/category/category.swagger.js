@@ -1,15 +1,15 @@
 /**
  * @swagger
- *  tags:
- *   name: category
- *   description : category module
+ * tags:
+ *  name: Category
+ *  description: Category Module and Routes
  */
 
 /**
  * @swagger
  *  components:
  *      schemas:
- *          createCategory:
+ *          CreateCategory:
  *              type: object
  *              required:
  *                  -   name
@@ -23,39 +23,49 @@
  *                      type: string
  *                  parent:
  *                      type: string
- *
  */
 
 /**
  * @swagger
- *  /category/create:
- *   post:
+ * /category:
+ *  post:
  *      summary: create new category
  *      tags:
- *          -   category
+ *          -   Category
  *      requestBody:
  *          content:
  *              application/x-www-form-urlencoded:
  *                  schema:
- *                      $ref: '#/components/schemas/createCategory'
+ *                      $ref: '#/components/schemas/CreateCategory'
  *              application/json:
  *                  schema:
- *                      $ref: '#/components/schemas/createCategory'
+ *                      $ref: '#/components/schemas/CreateCategory'
  *      responses:
- *              201:
- *                 description: created
- *
+ *          201:
+ *              description: created
  */
-
 /**
  * @swagger
- *  /category/get-all:
- *   get:
- *      summary: get all category
+ * /category:
+ *  get:
+ *      summary: get all categories
  *      tags:
- *          -   category
+ *          -   Category
  *      responses:
  *          200:
- *             description: successfully
- *
+ *              description: successfully
+ */
+/**
+ * @swagger
+ * /category/{id}:
+ *  delete:
+ *      summary: get all categories
+ *      tags:
+ *          -   Category
+ *      parameters:
+ *          -   in: path
+ *              name: id
+ *      responses:
+ *          200:
+ *              description: successfully
  */
