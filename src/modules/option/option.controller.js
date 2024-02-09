@@ -14,11 +14,27 @@ class optionController {
     async create(req, res, next) {
         try {
 
-            const {title, key, guid, enum: list, type, category} = req.body
-            await this.#service.create({title, key, guid, enum: list, type, category})
+            const {title, key, guid, enum: list, type, category, required} = req.body
+            await this.#service.create({title, key, guid, enum: list, type, category, required})
             return res.json({
                 status: StatusCodes.CREATED,
                 message: optionMessage.created
+            })
+        } catch (err) {
+            next(err)
+            // console.log(err)
+        }
+    }
+
+    async update(req, res, next) {
+        try {
+
+            const {title, key, guid, enum: list, type, category, required} = req.body
+            const {id} = req.params
+            await this.#service.update(id, {title, key, guid, enum: list, type, category, required})
+            return res.json({
+                status: StatusCodes.OK,
+                message: optionMessage.updated
             })
         } catch (err) {
             next(err)
@@ -35,6 +51,7 @@ class optionController {
         }
     }
 
+
     async findByCategoryId(req, res, next) {
         try {
             const {categoryId} = req.params
@@ -45,6 +62,7 @@ class optionController {
             next(err)
         }
     }
+
     async findByCategorySlug(req, res, next) {
         try {
             const {slug} = req.params
@@ -61,6 +79,16 @@ class optionController {
             const {id} = req.params
             const option = await this.#service.findById(id)
             return res.json(option)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    async deleteById(req, res, next) {
+        try {
+            const {id} = req.params
+            await this.#service.removeById(id)
+            return res.json(optionMessage.deleted)
         } catch (err) {
             next(err)
         }

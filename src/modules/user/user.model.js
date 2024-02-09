@@ -7,6 +7,8 @@ const otpSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema({
     fullname: {type: String, required: false},
+    username: {type: String, required: false, unique: true},
+    email: {type: String, required: false, unique: true},
     mobile: {type: String, unique: true, required: true},
     otp: {type: otpSchema},
     verifiedMobile: {type: Boolean, default: false, required: true},

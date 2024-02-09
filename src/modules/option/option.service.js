@@ -5,15 +5,17 @@ const createHttpError = require("http-errors");
 const {optionMessage} = require("./option.message");
 const slugify = require("slugify");
 const {categoryModel} = require("../category/category.model");
+const {CategoryService} = require("../category/category.service");
+const {isTrue, isFalse} = require("../../common/utils/function");
 
 class optionService {
     #model
-    #categoryModel
+    #categoryService
 
     constructor() {
         autoBind(this)
         this.#model = optionModel
-        this.#categoryModel = categoryModel
+        this.#categoryService = CategoryService
     }
 
     async find(req, res, next) {
@@ -76,34 +78,65 @@ class optionService {
         return options
     }
 
+    async removeById(id) {
+        await this.checkExistById(id)
+        return await this.#model.deleteOne({_id: id})
+
+    }
+
     async findById(id) {
         return await this.checkExistById(id)
     }
 
     async create(optionDto) {
-
-        const category = await this.checkExistById(optionDto.category)
-        optionDto.category = category._id
-        optionDto.key = slugify(optionDto.key, {trim: true, replacement: "_", lower: true})
-        await this.alreadyExistByCategoryAndKey(optionDto.key, optionDto._id)
+        const category = await this.#categoryService.checkExistById(optionDto.category);
+        optionDto.category = category._id;
+        optionDto.key = slugify(optionDto.key, {trim: true, replacement: "_", lower: true});
+        await this.alreadyExistByCategoryAndKey(optionDto.key, category._id)
         if (optionDto?.enum && typeof optionDto.enum === "string") {
             optionDto.enum = optionDto.enum.split(",")
-        } else if (Array.isArray(optionDto.enum)) optionDto.enum = []
-        const option = await this.#model.create(optionDto)
-        return option
+        } else if (!Array.isArray(optionDto.enum)) optionDto.enum = [];
+        if (isTrue(optionDto?.required)) optionDto.required = true;
+        if (isFalse(optionDto?.required)) optionDto.required = false;
+        const option = await this.#model.create(optionDto);
+        return option;
+    }
+
+    async update(id, optionDto) {
+        const existOption = await this.checkExistById(id);
+        if (optionDto.category && isValidObjectId(optionDto.category)) {
+            const category = await this.#categoryService.checkExistById(optionDto.category);
+            optionDto.category = category._id;
+        } else {
+            delete optionDto.category
+        }
+        if (optionDto.slug) {
+            optionDto.key = slugify(optionDto.key, {trim: true, replacement: "_", lower: true});
+            let categoryId = existOption.category;
+            if (optionDto.category) categoryId = optionDto.category;
+            await this.alreadyExistByCategoryAndKey(optionDto.key, categoryId, id)
+        }
+        if (optionDto?.enum && typeof optionDto.enum === "string") {
+            optionDto.enum = optionDto.enum.split(",")
+        } else if (!Array.isArray(optionDto.enum)) delete optionDto.enum;
+
+        if (isTrue(optionDto?.required)) optionDto.required = true;
+        else if (isFalse(optionDto?.required)) optionDto.required = false;
+        else delete optionDto?.required
+        return await this.#model.updateOne({_id: id}, {$set: optionDto})
     }
 
 
     async checkExistById(id) {
-        const category = await this.#categoryModel.findById(id);
-        if (!category) throw new createHttpError.NotFound(optionMessage.notFound);
-        return category;
+        const option = await this.#model.findById(id);
+        if (!option) throw new createHttpError.NotFound(optionMessage.notFound);
+        return option;
     }
 
-    async alreadyExistByCategoryAndKey(key, category) {
-        const isExist = await this.#model.findOne({category, key})
-        if (isExist) throw new createHttpError.Conflict(optionMessage.alreadyExist)
-        return null
+    async alreadyExistByCategoryAndKey(key, category, exceptionId = null) {
+        const isExist = await this.#model.findOne({category, key, _id: {$ne: exceptionId}});
+        if (isExist) throw new createHttpError.Conflict(optionMessage.alreadyExist);
+        return null;
     }
 
 

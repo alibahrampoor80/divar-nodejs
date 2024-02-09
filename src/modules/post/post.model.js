@@ -9,7 +9,8 @@ const postSchema = new mongoose.Schema({
     district: {type: String, required: true},
     coordinate: {type: [Number], required: true},
     images: {type: [String], required: false, default: []},
-})
+}, {timestamps: true})
+
 const postModel = mongoose.model("post", postSchema)
 
 module.exports = {postModel}

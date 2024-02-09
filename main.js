@@ -6,6 +6,7 @@ const {notFound} = require("./src/common/exception/not-found.handler");
 const {allExceptionHandler} = require("./src/common/exception/all-exception.handler");
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
+const expressEjsLayouts = require('express-ejs-layouts')
 
 function main() {
     const app = express()
@@ -14,6 +15,10 @@ function main() {
     app.use(express.urlencoded({extended: true}))
     app.use(cookieParser(process.env.COOKIE_SECRET_KEY))
     app.use(morgan('dev'))
+    app.use(express.static("public"))
+    app.use(expressEjsLayouts)
+    app.set("view engine", "ejs")
+    app.set("layout","./layouts/panel/main.ejs")
     app.use(mainRouter)
     swaggerConfig(app)
     notFound(app)
