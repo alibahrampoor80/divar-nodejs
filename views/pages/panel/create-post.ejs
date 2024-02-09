@@ -1,15 +1,26 @@
 <div class="col-lg-12 d-flex align-items-stretch">
     <div class="card w-100">
+        <% if (showBack){ %>
+            <div class="p-3">
+                <a href="/post/create" class="btn btn-danger">بازگشت به همه دسته ها</a>
+            </div>
+        <% } %>
         <div class="p-3">
-            <ul>
-                <li>
-                    <a href="/select-category" class="w-100 p-3 d-block bg-light text-dark">
-                <span class="ti ti-users nav-small-cap-icon fs-4">
-                    <span>عنوان</span>
-                </span>
-                    </a>
-                </li>
-            </ul>
+            <% if(categories && categories.length > 0){ %>
+                <ul>
+                    <% categories.forEach(category=>{ %>
+                        <li>
+                            <a href="?slug=<%= category.slug %>" class="w-100 p-3 d-block bg-light text-dark">
+                               <span class="ti ti-<%= category.icon %> nav-small-cap-icon fs-4">
+                                  <span><%= category.name %></span>
+                               </span>
+                            </a>
+                        </li>
+                    <% }) %>
+
+                </ul>
+            <% } %>
+
         </div>
     </div>
 </div>
