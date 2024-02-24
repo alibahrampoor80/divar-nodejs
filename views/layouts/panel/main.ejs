@@ -7,6 +7,8 @@
     <title>دیوار</title>
     <link rel="shortcut icon" type="image/png" href="/assets/images/logos/aflak-logo-2.png"/>
     <link rel="stylesheet" href="/assets/css/styles.css"/>
+    <link rel="stylesheet" href="/dist/css/mapp.min.css" />
+    <link rel="stylesheet" href="/dist/css/fa/style.css" />
 </head>
 
 <body>
@@ -28,13 +30,56 @@
         </div>
     </div>
 </div>
-<script src="./assets/libs/jquery/dist/jquery.min.js"></script>
-<script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="./assets/js/sidebarmenu.js"></script>
-<script src="./assets/js/app.min.js"></script>
-<script src="./assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-<script src="./assets/libs/simplebar/dist/simplebar.js"></script>
-<script src="./assets/js/dashboard.js"></script>
+<script type="text/javascript" src="/dist/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/dist/js/mapp.env.js"></script>
+<script type="text/javascript" src="/dist/js/mapp.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const app = new Mapp({
+            element: "#map-element",
+            presets: {
+                latlng: {
+                    lat: 35,
+                    lng: 51,
+                },
+                zoom: 5,
+            },
+            apiKey: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQxZDQwMDdhM2RmOWEyMzg0Y2Y5ZjA1YWEzOTdlM2JmYWUwMzk0MmUxMmY5MzU2ZjQ3OWE2YWJjZTU1YmQzZDNkOTQ0ODQyYWE4ZGJmMDU2In0.eyJhdWQiOiIyNjI2NiIsImp0aSI6ImQxZDQwMDdhM2RmOWEyMzg0Y2Y5ZjA1YWEzOTdlM2JmYWUwMzk0MmUxMmY5MzU2ZjQ3OWE2YWJjZTU1YmQzZDNkOTQ0ODQyYWE4ZGJmMDU2IiwiaWF0IjoxNzA4NzY5NTY1LCJuYmYiOjE3MDg3Njk1NjUsImV4cCI6MTcxMTE4ODc2NSwic3ViIjoiIiwic2NvcGVzIjpbImJhc2ljIl19.mJyik605kTl6MLzgTwd2snF438OX70sYnA7jBI3V-2w7BV9DmXxSXRRmDMQJ8roaSkEQkIN84H5cE5YKMyPMBqGW5s0nWnM5r2iDm57iWkQ7pS8VRkabdPjrMN2-8mGnf_nUnx5y3wZRBKKp9yAulKR1FPIt7XwddjVKZyjxtBYbrBJ88b9NgVGObACGMKLokEXtZLeyn0wophEj8kSMHdIutKhc6-3WeoGoeNS7_lpl3uofp1MLsZhr-b6oiKTeWxX8B5OIE-0lJ-9YPwJYTZXC_NsNIO3-R0lD5mFEVzfDqAU_yrAlLtZnMljh99PriTSNEIKVgtrzE03kjwfjdw",
+            gestureHandling: true,
+            gestureHandlingOptions: {
+                duration: 1200,
+                text: {
+                    touch: "نقشه را با دو انگشت حرکت دهید",
+                    scroll: "برای بزرگنمایی نقشه از ctrl + scroll  استفاده کنید",
+                    scrollMac:
+                        "برای بزرگنمایی نقشه از \u2318  + scroll  استفاده کنید",
+                },
+            },
+        });
+        app.addLayers();
+        app.map.on("click", function (e) {
+            app.addMarker({
+                name: "advanced-marker",
+                latlng: {
+                    lat: e.latlng.lat,
+                    lng: e.latlng.lng,
+                },
+                icon: app.icons.red,
+                popup: false,
+            });
+            let { lat, lng } = e.latlng;
+            document.getElementById("lat").value = lat;
+            document.getElementById("lng").value = lng;
+        });
+    });
+</script>
+
+<script src="/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/js/sidebarmenu.js"></script>
+<script src="/assets/js/app.min.js"></script>
+<script src="/assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+<script src="/assets/libs/simplebar/dist/simplebar.js"></script>
+<script src="/assets/js/dashboard.js"></script>
 </body>
 
 </html>

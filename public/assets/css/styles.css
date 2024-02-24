@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url("https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css");
-@import "../../assets/libs/node_modules/simplebar/dist/simplebar.css";
+/*@import "../../assets/libs/node_modules/simplebar/dist/simplebar.css";*/
 @import "../libs/simplebar/dist/simplebar.css";
 @import "../css/icons/tabler-icons/tabler-icons.css";
 
