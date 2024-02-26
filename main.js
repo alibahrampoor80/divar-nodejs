@@ -7,6 +7,8 @@ const {allExceptionHandler} = require("./src/common/exception/all-exception.hand
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
 const expressEjsLayouts = require('express-ejs-layouts')
+const moment = require("jalali-moment");
+
 
 function main() {
     const app = express()
@@ -14,12 +16,13 @@ function main() {
     app.use(express.json())
     app.use(express.urlencoded({extended: true}))
     app.use(cookieParser(process.env.COOKIE_SECRET_KEY))
-    app.use(morgan('dev'))
     app.use(express.static("public"))
+    app.use(morgan('dev'))
     app.use(expressEjsLayouts)
     app.set("view engine", "ejs")
-    app.set("layout","./layouts/panel/main.ejs")
+    app.set("layout", "./layouts/panel/main.ejs")
     app.use(mainRouter)
+    app.locals.moment = moment
     swaggerConfig(app)
     notFound(app)
     allExceptionHandler(app)

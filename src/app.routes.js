@@ -3,6 +3,7 @@ const {userRouter} = require("./modules/user/user.routes");
 const {categoryRouter} = require("./modules/category/category.routes");
 const {optionRouter} = require("./modules/option/option.routes");
 const {postRouter} = require("./modules/post/post.routes");
+
 const mainRouter = require("express").Router()
 
 mainRouter.use("/auth", AuthRouter)

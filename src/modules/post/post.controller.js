@@ -5,7 +5,9 @@ const {postMessage} = require("./post.message");
 const {categoryModel} = require("../category/category.model");
 const createHttpError = require("http-errors");
 const {Types} = require("mongoose");
-const axios = require("axios");
+const {getAddressDetail} = require("../../common/utils/http");
+const {removeProperty} = require("../../common/utils/function");
+const utf8 = require('utf8')
 
 class postController {
     #service
@@ -51,34 +53,27 @@ class postController {
 
     async create(req, res, next) {
         try {
-            console.log(req.body)
-            // res.redirect("/post/create")
+            const images = req?.files?.map(image => image?.path?.slice(7));
             const {title_post: title, description: content, lat, lng, category} = req.body
-            delete req.body['title_post']
-            delete req.body['description']
-            delete req.body['lat']
-            delete req.body['lng']
-            delete req.body['category']
-            delete req.body['images']
-            const options = req.body
-            const result =
-                await axios.get(`${process.env.MAP_URL}?lat=${lat}&lon=${lng}`, {
-                    headers: {
-                        "x-api-key": process.env.MAP_TOKEN
-                    }
-                }).then(res => res.data)
-
+            const {address, city, district, province} = await getAddressDetail(lat, lng)
+            const options = removeProperty(req.body, ["title_post", "description", "lat", "lng", "category", "images"])
+            for (let key in options) {
+                let value = options[key]
+                delete options[key]
+                key = utf8.decode(key)
+                options[key] = value
+            }
             await this.#service.create({
                 title,
                 content,
                 coordinate: [lat, lng],
-                images: [],
+                images,
                 category: new Types.ObjectId(category),
                 options,
-                address: result.address,
-                province: result.province,
-                city: result.city,
-                district: result.district
+                address,
+                province,
+                city,
+                district
             })
             return res.status(StatusCodes.CREATED).json({
                 message: postMessage.created
@@ -88,6 +83,15 @@ class postController {
         }
     }
 
+    async findMyPost(req, res, next) {
+        const userId = req.user._id
+        try {
+            const posts = await this.#service.find(userId)
+            return res.render("./pages/panel/posts.ejs", {posts})
+        } catch (err) {
+            next(err)
+        }
+    }
 }
 
 module.exports = {
