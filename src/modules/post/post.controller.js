@@ -53,6 +53,8 @@ class postController {
 
     async create(req, res, next) {
         try {
+            const userId = req.user._id
+
             const images = req?.files?.map(image => image?.path?.slice(7));
             const {title_post: title, description: content, lat, lng, category} = req.body
             const {address, city, district, province} = await getAddressDetail(lat, lng)
@@ -73,11 +75,18 @@ class postController {
                 address,
                 province,
                 city,
-                district
+                district,
+                userId
             })
-            return res.status(StatusCodes.CREATED).json({
-                message: postMessage.created
+            const posts = await this.#service.find(userId)
+            return res.render("./pages/panel/posts.ejs", {
+                posts,
+                success_message: postMessage.created,
+                error_message: null
             })
+            // return res.status(StatusCodes.CREATED).json({
+            //     message: postMessage.created
+            // })
         } catch (err) {
             next(err)
         }
@@ -86,8 +95,22 @@ class postController {
     async findMyPost(req, res, next) {
         const userId = req.user._id
         try {
-            const posts = await this.#service.find(userId)
-            return res.render("./pages/panel/posts.ejs", {posts})
+            let posts = await this.#service.find(userId)
+            // for (let i = 0; i < posts.length; i++) {
+            //     let content = posts[i].content;
+            //     let index = content.indexOf(">")
+            //     let aa = content.indexOf("</p>")
+            //     let openTag = content.substring(0, index + 1)
+            //     posts[i].content = content.substring(index + 1, aa)
+            //     console.log("aaa  ",posts[i].content.split(" ",10).join(" "))
+            //     console.log('----,', openTag)
+            // }
+            // console.log(posts)
+            return res.render("./pages/panel/posts.ejs", {
+                posts,
+                success_message: null,
+                error_message: null
+            })
         } catch (err) {
             next(err)
         }
