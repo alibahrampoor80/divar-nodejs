@@ -4,6 +4,7 @@ const postSchema = new mongoose.Schema({
     title: {type: String, required: true},
     content: {type: String, required: true},
     userId: {type: mongoose.Types.ObjectId, required: true},
+    amount: {type: Number, required: true, default: 0},
     category: {type: mongoose.Types.ObjectId, ref: "category", required: true},
     province: {type: String, required: false},
     city: {type: String, required: false},

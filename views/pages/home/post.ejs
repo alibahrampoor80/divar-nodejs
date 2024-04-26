@@ -1,3 +1,4 @@
+
 <div class="post">
     <div class="post-content">
         <div class="post-title">
@@ -43,9 +44,30 @@
         </div>
     </div>
     <div class="post-image">
-        <div class="post-thumbnail">
-            <img src="/<%= post.images[0] %>" alt="" class="post-thumbnail"/>
+
+
+        <div class="swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                <% for(let image of post.images){ %>
+                    <div class="swiper-slide post-thumbnail">
+                        <img src="/<%= image %>" alt="" class="post-thumbnail" style="width: 100%;"/>
+                    </div>
+                <% } %>
+
+            </div>
+            <!-- If we need pagination -->
+            <div class="swiper-pagination"></div>
+
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+
+            <!-- If we need scrollbar -->
+            <div class="swiper-scrollbar"></div>
         </div>
+
         <div class="post-note">
             <div class="post-note-input">
                 <textarea name="note" id="note" placeholder="یادداشت شما..."></textarea>
@@ -70,6 +92,13 @@
         </div>
     </div>
 </div>
+<style>
+    .swiper {
+        width: 600px;
+        height: 300px;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     let callDetail = document.getElementById("call-detail");
     callDetail.addEventListener("click", () => {
@@ -81,5 +110,27 @@
                 window.location.href = "tel://<%= post.userMobile %>";
             }
         });
+    });
+
+    const swiper = new Swiper('.swiper', {
+        // Optional parameters
+        direction: 'horizontal',
+        loop: true,
+
+        // If we need pagination
+        pagination: {
+            el: '.swiper-pagination',
+        },
+
+        // Navigation arrows
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+
+        // And if we need scrollbar
+        scrollbar: {
+            el: '.swiper-scrollbar',
+        },
     });
 </script>

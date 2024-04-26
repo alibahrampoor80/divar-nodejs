@@ -44,6 +44,11 @@
                     <label for="">توضیحات آگهی</label>
                     <textarea class="form-control" name="description" placeholder="توضیحات آگهی"></textarea>
                 </div>
+                <div class="my-2">
+                    <label for="amount">قیمت آگهی</label>
+                    <input type="text" name="amount" id="amount" placeholder="قیمت آگهی"
+                           class="form-control"/>
+                </div>
                 <% options.forEach(option=>{ %>
                     <div class="my-2">
                         <label for="<%= option.key %>"><%= option.title %> <%= option.required ? "*" : "" %></label>
