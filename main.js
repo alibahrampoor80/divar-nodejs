@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
 const expressEjsLayouts = require('express-ejs-layouts')
 const moment = require("jalali-moment");
+const methodOverride = require('method-override')
 
 
 function main() {
@@ -19,6 +20,7 @@ function main() {
     app.use(express.static("public"))
     app.use(morgan('dev'))
     app.use(expressEjsLayouts)
+    app.use(methodOverride('_method'))
     app.set("view engine", "ejs")
     app.set("layout", "./layouts/panel/main.ejs")
     app.use(mainRouter)

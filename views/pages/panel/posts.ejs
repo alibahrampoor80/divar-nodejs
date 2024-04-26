@@ -5,9 +5,9 @@
             <div class="card w-100">
                 <div class="card-body p-4">
                     <% if (success_message){ %>
-                        <div class="row">
-                            <p class="alert alert-info"><%=success_message%></p>
-                        </div>
+                    <div class="row">
+                        <p class="alert alert-info"><%= success_message %></p>
+                    </div>
                     <% } %>
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title fw-semibold mb-4">آگهی های من</h5>
@@ -63,9 +63,11 @@
                                             </div>
                                         </td>
                                         <td class="border-bottom-0">
-                                            <a href="" class="btn btn-danger">
-                                                حذف
-                                            </a>
+                                            <form action="/post/delete/<%= posts._id %>?_method=delete" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-danger">
+                                                    حذف
+                                                </button>
+                                            </form>
                                             <a href="<%= posts._id %>" class="btn btn-success">
                                                 نمایش کامل آگهی
                                             </a>

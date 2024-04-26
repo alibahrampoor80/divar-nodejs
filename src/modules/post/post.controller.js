@@ -11,6 +11,7 @@ const utf8 = require('utf8')
 
 class postController {
     #service
+    success_message;
 
     constructor() {
         autoBind(this)
@@ -54,7 +55,6 @@ class postController {
     async create(req, res, next) {
         try {
             const userId = req.user._id
-
             const images = req?.files?.map(image => image?.path?.slice(7));
             const {title_post: title, description: content, lat, lng, category} = req.body
             const {address, city, district, province} = await getAddressDetail(lat, lng)
@@ -78,12 +78,8 @@ class postController {
                 district,
                 userId
             })
-            const posts = await this.#service.find(userId)
-            return res.render("./pages/panel/posts.ejs", {
-                posts,
-                success_message: postMessage.created,
-                error_message: null
-            })
+            this.success_message = postMessage.created
+            return res.redirect('/post/my')
             // return res.status(StatusCodes.CREATED).json({
             //     message: postMessage.created
             // })
@@ -96,21 +92,23 @@ class postController {
         const userId = req.user._id
         try {
             let posts = await this.#service.find(userId)
-            // for (let i = 0; i < posts.length; i++) {
-            //     let content = posts[i].content;
-            //     let index = content.indexOf(">")
-            //     let aa = content.indexOf("</p>")
-            //     let openTag = content.substring(0, index + 1)
-            //     posts[i].content = content.substring(index + 1, aa)
-            //     console.log("aaa  ",posts[i].content.split(" ",10).join(" "))
-            //     console.log('----,', openTag)
-            // }
-            // console.log(posts)
-            return res.render("./pages/panel/posts.ejs", {
+            res.render("./pages/panel/posts.ejs", {
                 posts,
-                success_message: null,
+                success_message: this.success_message,
                 error_message: null
             })
+            this.success_message = null
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    async remove(req, res, next) {
+        try {
+            const {id} = req.params
+            await this.#service.remove(id)
+            this.success_message = postMessage.deleted
+            return res.redirect('/post/my')
         } catch (err) {
             next(err)
         }

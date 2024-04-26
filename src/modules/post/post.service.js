@@ -28,6 +28,18 @@ class postService {
         if (userId && isValidObjectId(userId)) return await this.#model.find({userId})
         throw new createHttpError.BadRequest(postMessage.RequestNotValid)
     }
+
+    async checkExistPost(postId) {
+        if (!postId || !isValidObjectId(postId)) throw new createHttpError.BadRequest(postMessage.RequestNotValid)
+        const post = await this.#model.findById(postId)
+        if (!post) throw new createHttpError.NotFound(postMessage.notFound)
+        return post
+    }
+
+    async remove(postId) {
+        await this.checkExistPost(postId);
+        await this.#model.deleteOne({_id: postId});
+    }
 }
 
 module.exports = {

@@ -1,5 +1,6 @@
 const swaggerJsDocs = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express")
+const basicAuth = require('express-basic-auth');
 
 const swaggerConfig = (app) => {
     const swaggerDocument = swaggerJsDocs({
@@ -15,7 +16,12 @@ const swaggerConfig = (app) => {
     })
 
     const swagger = swaggerUi.setup(swaggerDocument, {})
-    app.use("/api-doc", swaggerUi.serve, swagger)
+    app.use("/api-doc",
+        basicAuth({
+            users: {'ali': '09132605962'},
+            challenge: true,
+        }),
+        swaggerUi.serve, swagger)
 }
 
 
