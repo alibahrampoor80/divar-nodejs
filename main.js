@@ -21,6 +21,8 @@ function main() {
     app.use(morgan('dev'))
     app.use(expressEjsLayouts)
     app.use(methodOverride('_method'))
+    app.set("layout extractScripts",true)
+    app.set("layout extractStyles",true)
     app.set("view engine", "ejs")
     app.set("layout", "./layouts/panel/main.ejs")
     app.use(mainRouter)

@@ -1,0 +1,85 @@
+<div class="post">
+    <div class="post-content">
+        <div class="post-title">
+            <div class="post-title-h1"><%= post.title %></div>
+            <div class="post-title-location"><%= post.city || post.province %></div>
+        </div>
+        <div class="post-action">
+            <button class="post-button-action button" id="call-detail">
+                اطلاعات تماس
+            </button>
+            <button class="post-button-chat button">چت</button>
+
+            <img class="post-bookmark" src="./img/bookmark.svg" alt=""/>
+            <img src="./img/share.svg" class="post-share" alt=""/>
+        </div>
+        <div class="post-list">
+            <a href="" class="post-landing">
+                <div class="post-row">
+                    <div class="post-landing-mobile">
+                        <img src="./img/mobile.svg" alt=""/>
+                        <p>مشخصات کامل آگهی</p>
+                    </div>
+                    <div class="post-landing-arrow">
+                        <img src="./img/arrow-down.svg" alt=""/>
+                    </div>
+                </div>
+            </a>
+            <hr/>
+            <% for(key in post.options){ %>
+                <div class="post-list-item post-row">
+                    <div class="post-list-title"><%= key %></div>
+                    <div class="post-list-detail"><%= post.options[key] %></div>
+                </div>
+            <% } %>
+
+            <hr/>
+        </div>
+        <div class="post-description">
+            <h2 class="post-description-title">توضیحات</h2>
+            <div class="post-description-detail">
+                <p><%= post.content %></p>
+            </div>
+        </div>
+    </div>
+    <div class="post-image">
+        <div class="post-thumbnail">
+            <img src="/<%= post.images[0] %>" alt="" class="post-thumbnail"/>
+        </div>
+        <div class="post-note">
+            <div class="post-note-input">
+                <textarea name="note" id="note" placeholder="یادداشت شما..."></textarea>
+            </div>
+            <p>یادداشت تنها برای شما قابل دیدن است و پس از حذف آگهی، پاک خواهد شد.</p>
+        </div>
+        <div>
+            <a href="#" class="post-privacy-link">
+                <div class="post-privacy post-row">
+                    <img src="./img/message.svg" alt=""/>
+                    <p>راهنمایی خرید امن</p>
+                </div>
+            </a>
+        </div>
+        <div>
+            <a href="#" class="post-privacy-link">
+                <div class="post-privacy post-row">
+                    <img src="./img/message.svg" alt=""/>
+                    <p>ثبت تخلف و مشکل آگهی</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+    let callDetail = document.getElementById("call-detail");
+    callDetail.addEventListener("click", () => {
+        Swal.fire({
+            title: "<%= post.userMobile %>",
+            confirmButtonText: "تماس",
+        }).then((res) => {
+            if (res.isConfirmed) {
+                window.location.href = "tel://<%= post.userMobile %>";
+            }
+        });
+    });
+</script>

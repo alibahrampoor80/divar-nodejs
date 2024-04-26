@@ -16,6 +16,7 @@ mainRouter.get('/', (req, res) => {
     res.locals.layout = "./layouts/website/main.ejs"
     res.render("./pages/home/index.ejs")
 })
+
 mainRouter.get('/panel', (req, res) => {
     res.render("./pages/panel/dashboard.ejs")
 })

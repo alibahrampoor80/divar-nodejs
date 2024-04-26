@@ -1,6 +1,6 @@
 const autoBind = require("auto-bind");
 const {postModel} = require("./post.model");
-const {isValidObjectId, default: mongoose} = require("mongoose");
+const {isValidObjectId, default: mongoose, Types} = require("mongoose");
 const createHttpError = require("http-errors");
 const {optionModel} = require("../option/option.model");
 const {postMessage} = require("./post.message");
@@ -31,7 +31,36 @@ class postService {
 
     async checkExistPost(postId) {
         if (!postId || !isValidObjectId(postId)) throw new createHttpError.BadRequest(postMessage.RequestNotValid)
-        const post = await this.#model.findById(postId)
+        const [post] = await this.#model.aggregate([
+            {
+                $match: {_id: new Types.ObjectId(postId)}
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$user",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $addFields: {
+                    userMobile: "$user.mobile"
+                }
+            },
+            {
+                $project: {
+                    user: 0
+                }
+            }
+        ])
+
         if (!post) throw new createHttpError.NotFound(postMessage.notFound)
         return post
     }
